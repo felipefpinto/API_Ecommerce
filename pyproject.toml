@@ -1,0 +1,24 @@
+[project]
+name = "api-ecommerce"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Felipe Pinto", email = "felipefernandespinto1093@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy>=2.0.52",
+    "psycopg[binary]>=3.3.4,<4.0.0",
+    "python-dotenv>=1.2.2,<2.0.0",
+    "alembic>=1.19.1",
+]
+
+[project.scripts]
+api-ecommerce = "api_ecommerce:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
