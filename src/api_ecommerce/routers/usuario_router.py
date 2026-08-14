@@ -27,6 +27,11 @@ def buscar_usuario(id_usuario: int, db: Session = Depends(get_db)):
 def atualizar_usuario(id_usuario: int, usuario_data: UsuarioCreate, db: Session = Depends(get_db)):
     return usuario_controller.atualizar_usuario(db, id_usuario, usuario_data)
 
+@router.patch("/{id_usuario}", response_model=UsuarioResponse)
+def atualizar_usuario(
+    id_usuario: int, usuario_data: UsuarioCreate, db: Session = Depends(get_db)
+):
+    return usuario_controller.atualizar_usuario(db, id_usuario, usuario_data)
 
 @router.delete("/{id_usuario}")
 def deletar_usuario(id_usuario: int, db: Session = Depends(get_db)):
