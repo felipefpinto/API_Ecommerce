@@ -1,1 +1,1 @@
-from .usuario_schema import UsuarioCreate, UsuarioResponse
+from .usuario_schema import UsuarioCreate, UsuarioResponse, UsuarioUpdate

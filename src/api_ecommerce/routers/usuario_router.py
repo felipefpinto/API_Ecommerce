@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from api_ecommerce.database import get_db
-from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse
+from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse, UsuarioUpdate
 from api_ecommerce.controllers import usuario_controller
 
 router = APIRouter(prefix="/usuario", tags=["Usuários"])
@@ -24,14 +24,16 @@ def buscar_usuario(id_usuario: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{id_usuario}", response_model=UsuarioResponse)
-def atualizar_usuario(id_usuario: int, usuario_data: UsuarioCreate, db: Session = Depends(get_db)):
+def atualizar_usuario(id_usuario: int, usuario_data: UsuarioUpdate, db: Session = Depends(get_db)):
     return usuario_controller.atualizar_usuario(db, id_usuario, usuario_data)
 
-@router.patch("/{id_usuario}", response_model=UsuarioResponse)
-def atualizar_usuario(
-    id_usuario: int, usuario_data: UsuarioCreate, db: Session = Depends(get_db)
-):
-    return usuario_controller.atualizar_usuario(db, id_usuario, usuario_data)
+@router.patch("/{id_usuario}",response_model=UsuarioResponse)
+def atualizar_usuario(id_usuario: int,usuario: UsuarioUpdate,db: Session = Depends(get_db)):
+    return usuario_controller.atualizar_usuario(
+        db=db,
+        id_usuario=id_usuario,
+        usuario_data=usuario
+    )
 
 @router.delete("/{id_usuario}")
 def deletar_usuario(id_usuario: int, db: Session = Depends(get_db)):

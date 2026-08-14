@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from api_ecommerce.models import Usuario
-from api_ecommerce.schemas import UsuarioCreate
+from api_ecommerce.schemas import *
 
 
 def criar_usuario(db: Session, usuario: UsuarioCreate):
@@ -69,7 +69,7 @@ def buscar_usuario(db: Session, id_usuario: int):
 def atualizar_usuario(
     db: Session,
     id_usuario: int,
-    usuario_data: UsuarioCreate
+    usuario_data: UsuarioUpdate
 ):
 
     usuario = (
@@ -84,10 +84,10 @@ def atualizar_usuario(
             detail="Usuário não encontrado"
         )
 
-    usuario.nome = usuario_data.nome
-    usuario.email = usuario_data.email
-    usuario.celular = usuario_data.celular
-    usuario.cpf = usuario_data.cpf
+    dados_atualizados = usuario_data.model_dump(exclude_unset=True)
+
+    for campo, valor in dados_atualizados.items():
+        setattr(usuario, campo, valor)
 
     db.commit()
     db.refresh(usuario)
