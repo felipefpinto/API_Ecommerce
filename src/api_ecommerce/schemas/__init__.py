@@ -1,1 +1,1 @@
-from api_ecommerce.schemas.usuario_schema import UsuarioCreate, UsuarioResponse
+from .usuario_schema import UsuarioCreate, UsuarioResponse

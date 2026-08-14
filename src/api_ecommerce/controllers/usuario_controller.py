@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from api_ecommerce.models import *
-from api_ecommerce.schemas import *
+from api_ecommerce.models import Usuario
+from api_ecommerce.schemas import UsuarioCreate
 
 
 def criar_usuario(db: Session, usuario: UsuarioCreate):
@@ -46,7 +46,6 @@ def criar_usuario(db: Session, usuario: UsuarioCreate):
 
 
 def listar_usuarios(db: Session):
-
     return db.query(Usuario).all()
 
 
@@ -94,6 +93,7 @@ def atualizar_usuario(
     db.refresh(usuario)
 
     return usuario
+
 
 def deletar_usuario(db: Session, id_usuario: int):
 

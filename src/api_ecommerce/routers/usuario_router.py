@@ -5,7 +5,7 @@ from api_ecommerce.database import get_db
 from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse
 from api_ecommerce.controllers import usuario_controller
 
-router = APIRouter(prefix="/usuarios", tags=["Usuários"])
+router = APIRouter(prefix="/usuario", tags=["Usuários"])
 
 
 @router.post("/", response_model=UsuarioResponse)
