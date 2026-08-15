@@ -13,12 +13,13 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return usuario_controller.criar_usuario(db, usuario)
 
 
-@router.get("/buscaremail", response_model=UsuarioResponse)
+@router.get("/buscaremail", status_code=200)
 def buscar_usuario_por_email(
     email: str = Query(...),
     db: Session = Depends(get_db)
 ):
-    return usuario_controller.buscar_usuario_por_email(db, email)
+    usuario_controller.buscar_usuario_por_email(db, email)
+    return
 
 @router.get("/", response_model=list[UsuarioResponse])
 def listar_usuarios(db: Session = Depends(get_db)):
