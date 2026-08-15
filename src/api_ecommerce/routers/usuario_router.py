@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,Query, HTTPException
 from sqlalchemy.orm import Session
 
 from api_ecommerce.database import get_db
@@ -12,6 +12,13 @@ router = APIRouter(prefix="/usuario", tags=["Usuários"])
 def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return usuario_controller.criar_usuario(db, usuario)
 
+
+@router.get("/buscaremail", response_model=UsuarioResponse)
+def buscar_usuario_por_email(
+    email: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return usuario_controller.buscar_usuario_por_email(db, email)
 
 @router.get("/", response_model=list[UsuarioResponse])
 def listar_usuarios(db: Session = Depends(get_db)):

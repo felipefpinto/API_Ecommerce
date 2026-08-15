@@ -115,3 +115,16 @@ def deletar_usuario(db: Session, id_usuario: int):
     return {
         "message": "Usuário excluído com sucesso"
     }
+
+def buscar_usuario_por_email(db, email: str):
+    usuario = db.query(Usuario).filter(
+        Usuario.email == email
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return usuario
