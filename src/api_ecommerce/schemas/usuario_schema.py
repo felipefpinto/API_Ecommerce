@@ -1,11 +1,12 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 class UsuarioCreate(BaseModel):
     nome: str
     email: EmailStr
     celular: str
-    cpf: str
+    cpf: Optional[str] = None
 
 
 class UsuarioUpdate(BaseModel):
@@ -20,7 +21,7 @@ class UsuarioResponse(BaseModel):
     nome: str
     email: EmailStr
     celular: str
-    cpf: str
+    cpf: Optional[str] = None
 
     model_config = {
         "from_attributes": True

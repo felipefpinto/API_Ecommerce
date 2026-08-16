@@ -19,23 +19,25 @@ def criar_usuario(db: Session, usuario: UsuarioCreate):
             detail="E-mail já cadastrado"
         )
 
-    cpf_existente = (
-        db.query(Usuario)
-        .filter(Usuario.cpf == usuario.cpf)
-        .first()
+    if usuario.cpf is not None:
+        cpf_existente = (
+            db.query(Usuario)
+            .filter(Usuario.cpf == usuario.cpf)
+            .first()
     )
 
-    if cpf_existente:
-        raise HTTPException(
-            status_code=400,
-            detail="CPF já cadastrado"
-        )
+        if cpf_existente:
+            raise HTTPException(
+                status_code=400,
+                detail="CPF já cadastrado"
+            )
+
 
     novo_usuario = Usuario(
         nome=usuario.nome,
         email=usuario.email,
         celular=usuario.celular,
-        cpf=usuario.cpf
+        cpf=usuario.cpf,
     )
 
     db.add(novo_usuario)

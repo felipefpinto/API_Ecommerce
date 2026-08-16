@@ -28,8 +28,8 @@ class Usuario(Base):
         nullable=False,
     )
 
-    cpf: Mapped[str] = mapped_column(
-        String(11),
-        nullable=False,
-        unique=True,
-    )
+    cpf: Mapped[str | None] = mapped_column(
+    String(11),
+    nullable=True,
+    unique=True,
+)
