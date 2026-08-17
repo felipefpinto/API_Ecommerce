@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from api_ecommerce.database import get_db
 from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse, UsuarioUpdate
 from api_ecommerce.controllers import usuario_controller
+from api_ecommerce.models.usuario import Usuario
 
 router = APIRouter(prefix="/usuario", tags=["Usuários"])
 
@@ -20,6 +21,25 @@ def buscar_usuario_por_email(
 ):
     usuario_controller.buscar_usuario_por_email(db, email)
     return
+
+@router.get("/telefone")
+def buscar_telefone(
+    email: str,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.email == email
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return {
+        "celular": usuario.celular
+    }
 
 @router.get("/", response_model=list[UsuarioResponse])
 def listar_usuarios(db: Session = Depends(get_db)):
