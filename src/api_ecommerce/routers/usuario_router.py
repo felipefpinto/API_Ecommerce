@@ -22,6 +22,27 @@ def buscar_usuario_por_email(
     usuario_controller.buscar_usuario_por_email(db, email)
     return
 
+@router.get("/dados-login")
+def dados_login(
+    email: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.email == email
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return {
+        "id_usuario": usuario.id_usuario,
+        "nome": usuario.nome,
+        "email": usuario.email
+    }
+    
 @router.get("/telefone")
 def buscar_telefone(
     email: str,
