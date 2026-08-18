@@ -36,9 +36,11 @@ def buscar_telefone(
             status_code=404,
             detail="Usuário não encontrado"
         )
-
+    numero_celular = str(usuario.celular)
+    celular_mascarado = numero_celular[:2] + "*****" + numero_celular[-4:]
+    
     return {
-        "celular": usuario.celular
+        "numero": celular_mascarado
     }
 
 @router.get("/", response_model=list[UsuarioResponse])
