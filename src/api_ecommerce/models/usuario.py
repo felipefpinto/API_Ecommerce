@@ -26,10 +26,11 @@ class Usuario(Base):
     celular: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
+        unique=True
     )
 
     cpf: Mapped[str | None] = mapped_column(
-    String(11),
-    nullable=True,
-    unique=True,
+        String(11),
+        nullable=True,
+        unique=True,
 )

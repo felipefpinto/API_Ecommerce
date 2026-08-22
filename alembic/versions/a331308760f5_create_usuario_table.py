@@ -25,11 +25,12 @@ def upgrade() -> None:
     sa.Column('id_usuario', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('nome', sa.String(length=100), nullable=False),
     sa.Column('email', sa.String(length=150), nullable=False),
-    sa.Column('celular', sa.String(length=20), nullable=False),
+    sa.Column('celular', sa.String(length=15), nullable=False),
     sa.Column('cpf', sa.String(length=11), nullable=True),
     sa.PrimaryKeyConstraint('id_usuario'),
     sa.UniqueConstraint('cpf'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('celular')
     )
     # ### end Alembic commands ###
 
