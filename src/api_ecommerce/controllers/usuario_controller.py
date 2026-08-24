@@ -130,3 +130,16 @@ def buscar_usuario_por_email(db, email: str):
         )
 
     return usuario
+
+def buscar_usuario_por_celular(db, celular: str):
+    usuario = db.query(Usuario).filter(
+        Usuario.celular == celular
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return usuario

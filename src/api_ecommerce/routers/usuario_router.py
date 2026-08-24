@@ -22,6 +22,14 @@ def buscar_usuario_por_email(
     usuario_controller.buscar_usuario_por_email(db, email)
     return
 
+@router.get("/buscarcelular", status_code=200)
+def buscar_usuario_por_celular(
+    celular: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    usuario_controller.buscar_usuario_por_celular(db, celular)
+    return
+
 @router.get("/dados-login")
 def dados_login(
     email: str = Query(...),
