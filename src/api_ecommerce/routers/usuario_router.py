@@ -32,12 +32,27 @@ def buscar_usuario_por_celular(
 
 @router.get("/dados-login")
 def dados_login(
-    email: str = Query(...),
+    email: str | None = Query(None),
+    celular: str | None = Query(None),
     db: Session = Depends(get_db)
 ):
-    usuario = db.query(Usuario).filter(
-        Usuario.email == email
-    ).first()
+    if not email and not celular:
+        raise HTTPException(
+            status_code=400,
+            detail="Informe o e-mail ou celular"
+        )
+
+    query = db.query(Usuario)
+
+    if email:
+        usuario = query.filter(
+            Usuario.email == email
+        ).first()
+
+    else:
+        usuario = query.filter(
+            Usuario.celular == celular
+        ).first()
 
     if usuario is None:
         raise HTTPException(
@@ -70,6 +85,34 @@ def buscar_telefone(
     
     return {
         "numero": celular_mascarado
+    }
+
+@router.get("/email")
+def buscar_email(
+    celular: str,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.celular == celular
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+    
+    email = usuario.email
+    partes_email = email.split("@")
+    nome_usuario = partes_email[0]
+    dominio = partes_email[1]
+    
+    nome_usuario_mascarado = nome_usuario[0:2] + "****" + nome_usuario[-1:-3:-1][::-1]
+    
+    email_mascarado = nome_usuario_mascarado + "@" + dominio
+    
+    return {
+        "email": email_mascarado
     }
 
 @router.get("/", response_model=list[UsuarioResponse])
