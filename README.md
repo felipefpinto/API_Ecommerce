@@ -1,4 +1,3 @@
-
 # API E-commerce
 
 Backend da aplicação de e-commerce desenvolvido com **FastAPI**, **SQLAlchemy** e **PostgreSQL**.
@@ -489,4 +488,4 @@ http://localhost:8000/docs
 
 # 9.Projeto
 
-Projeto acadêmico de desenvolvimento de uma aplicação de e-commerce.
+Projeto acadêmico de uma aplicação de e-commerce.
