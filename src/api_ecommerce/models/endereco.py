@@ -37,7 +37,7 @@ class Endereco(Base):
     ponto_referencia: Mapped[str | None] = mapped_column(String(70), nullable=True)
     latitude: Mapped[Decimal | None] = mapped_column(Numeric(10,8), nullable=True)
     longitude: Mapped[Decimal | None] = mapped_column(Numeric(11,8), nullable=True)
-    ativo: Mapped[bool] = mapped_column(default=True, nullable=False)
+    ativo: Mapped[bool] = mapped_column(default=False, nullable=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,default=datetime.utcnow,)
     atualizado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,default=datetime.utcnow,onupdate=datetime.utcnow,)    
         

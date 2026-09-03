@@ -17,12 +17,16 @@ router = APIRouter(
     response_model=EnderecoResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def criar_endereco(
+async def criar_endereco(
     id_usuario: int,
     endereco_data: EnderecoCreate,
     db: Session = Depends(get_db),
 ):
-    return endereco_controller.criar_endereco(db, id_usuario, endereco_data)
+    return await endereco_controller.criar_endereco(
+        db,
+        id_usuario,
+        endereco_data,
+    )
 
 
 @router.get("/", response_model=list[EnderecoResponse])
@@ -56,6 +60,21 @@ def atualizar_endereco(
         endereco_data,
     )
 
+@router.patch(
+    "{id_endereco}/principal",
+    response_model=EnderecoResponse,
+)
+def definir_endereco_principal(
+    id_usuario: int,
+    id_endereco: int,
+    db: Session = Depends(get_db),
+):
+
+    return endereco_controller.definir_endereco_principal(
+        db,
+        id_usuario,
+        id_endereco,
+    )
 
 @router.delete("/{id_endereco}")
 def deletar_endereco(
