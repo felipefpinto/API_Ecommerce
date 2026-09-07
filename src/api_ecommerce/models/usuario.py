@@ -8,6 +8,7 @@ from api_ecommerce.database.base import Base
 
 if TYPE_CHECKING:
     from api_ecommerce.models.endereco import Endereco
+    from api_ecommerce.models.restaurante import Restaurante
 
 
 class Usuario(Base):
@@ -44,4 +45,8 @@ class Usuario(Base):
     enderecos: Mapped[list["Endereco"]] = relationship(
         back_populates="usuario",
         cascade="all, delete-orphan",
+    )
+
+    restaurantes: Mapped[list["Restaurante"]] = relationship(
+        back_populates="responsavel",
     )

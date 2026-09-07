@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from api_ecommerce.database.connection import engine
-from api_ecommerce.routers import endereco_router, usuario_router
+from api_ecommerce.routers import endereco_router, restaurante_router, usuario_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -50,3 +50,4 @@ def database_health_check():
 
 app.include_router(usuario_router.router)
 app.include_router(endereco_router.router)
+app.include_router(restaurante_router.router)
