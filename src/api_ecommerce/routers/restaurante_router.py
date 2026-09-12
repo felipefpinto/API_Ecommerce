@@ -203,3 +203,28 @@ def deletar_horario_funcionamento(
         id_restaurante,
         id_horario_funcionamento,
     )
+
+@router.get("/{id_restaurante}/status-cadastro")
+def status_cadastro_restaurante(
+    id_restaurante: int,
+    db: Session = Depends(get_db),
+):
+    return restaurante_controller.verificar_status_cadastro(
+        db,
+        id_restaurante,
+    )
+
+@router.get(
+    "/{id_restaurante}/status-funcionamento"
+)
+def status_funcionamento_restaurante(
+    id_restaurante: int,
+    db: Session = Depends(get_db),
+):
+    return (
+        restaurante_controller
+        .verificar_funcionamento_restaurante(
+            db,
+            id_restaurante,
+        )
+    )

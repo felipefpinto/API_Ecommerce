@@ -171,63 +171,133 @@ class HorarioFuncionamentoResponse(HorarioFuncionamentoBase):
 
 
 class RestauranteBase(BaseModel):
-    razao_social: str = Field(..., max_length=150)
-    nome_fantasia: str = Field(..., max_length=100)
-    categoria: str = Field(..., max_length=50)
-    descricao: str | None = Field(default=None, max_length=500)
+    razao_social: str = Field(
+        ...,
+        max_length=150,
+    )
+
+    nome_fantasia: str = Field(
+        ...,
+        max_length=100,
+    )
+
+    descricao: str | None = Field(
+        default=None,
+        max_length=500,
+    )
 
 
 class RestauranteCreate(RestauranteBase):
-    cnpj: str = Field(..., min_length=14, max_length=14)
-    responsavel_usuario_id: int
-    canais_venda: list[CanalVendaCreate] = Field(default_factory=list)
-    horarios_funcionamento: list[HorarioFuncionamentoCreate] = Field(
+    cnpj: str = Field(
+        ...,
+        min_length=14,
+        max_length=14,
+    )
+
+    responsavel_id: int
+
+    categoria_ids: list[int] = Field(
+        ...,
+        min_length=1,
+    )
+
+    canais_venda: list[CanalVendaCreate] = Field(
+        default_factory=list,
+    )
+
+    horarios_funcionamento: list[
+        HorarioFuncionamentoCreate
+    ] = Field(
         default_factory=list,
     )
 
     @field_validator("cnpj", mode="before")
     @classmethod
     def validar_cnpj(cls, cnpj: object) -> str:
-        cnpj_normalizado = re.sub(r"\D", "", str(cnpj))
+        cnpj_normalizado = re.sub(
+            r"\D",
+            "",
+            str(cnpj),
+        )
 
-        if not validar_cnpj_digitos(cnpj_normalizado):
+        if not validar_cnpj_digitos(
+            cnpj_normalizado
+        ):
             raise ValueError("CNPJ invalido")
 
         return cnpj_normalizado
 
+    @field_validator("categoria_ids")
+    @classmethod
+    def validar_categorias(
+        cls,
+        categoria_ids: list[int],
+    ) -> list[int]:
+        if not categoria_ids:
+            raise ValueError(
+                "Selecione pelo menos uma categoria"
+            )
+
+        if len(categoria_ids) != len(
+            set(categoria_ids)
+        ):
+            raise ValueError(
+                "Nao e permitido repetir categorias"
+            )
+
+        return categoria_ids
+
 
 class RestauranteUpdate(BaseModel):
-    razao_social: str | None = Field(default=None, max_length=150)
-    nome_fantasia: str | None = Field(default=None, max_length=100)
-    categoria: str | None = Field(default=None, max_length=50)
-    descricao: str | None = Field(default=None, max_length=500)
+    razao_social: str | None = None
+    nome_fantasia: str | None = None
+    descricao: str | None = None
     status: RestauranteStatus | None = None
+    categoria_ids: list[int] | None = None
 
-    @field_validator("status", mode="before")
+    @field_validator("categoria_ids")
     @classmethod
-    def validar_status(cls, status: object | None) -> str | None:
-        if status is None:
-            return None
+    def validar_categorias(
+        cls,
+        categoria_ids: list[int] | None,
+    ):
+        if categoria_ids is None:
+            return categoria_ids
 
-        status_normalizado = normalizar_texto(status)
+        if not categoria_ids:
+            raise ValueError(
+                "Selecione pelo menos uma categoria"
+            )
 
-        if status_normalizado not in RestauranteStatus._value2member_map_:
-            raise ValueError("Status deve ser PENDENTE, DISPONIVEL ou INATIVO")
+        if len(categoria_ids) != len(set(categoria_ids)):
+            raise ValueError(
+                "Não é permitido repetir categorias"
+            )
 
-        return status_normalizado
-
-    model_config = {
-        "use_enum_values": True,
-    }
+        return categoria_ids
 
 
 class RestauranteResponse(RestauranteBase):
     id_restaurante: int
     cnpj: str
     status: RestauranteStatus
-    responsavel_usuario_id: int
-    canais_venda: list[CanalVendaResponse] = Field(default_factory=list)
-    horarios_funcionamento: list[HorarioFuncionamentoResponse] = Field(
+    responsavel_id: int
+
+    categorias: list[
+        CategoriaRestauranteResponse
+    ] = Field(
+        default_factory=list,
+    )
+
+    canais_venda: list[
+        CanalVendaResponse
+    ] = Field(
+        default_factory=list,
+    )
+
+    horarios_funcionamento: list[
+        HorarioFuncionamentoResponse
+    ] = Field(
         default_factory=list,
     )
 
@@ -247,4 +317,13 @@ class RestauranteCnpjResponse(BaseModel):
 
     model_config = {
         "use_enum_values": True,
+    }
+
+class CategoriaRestauranteResponse(BaseModel):
+    id: int
+    nome: str
+    descricao: str | None = None
+
+    model_config = {
+        "from_attributes": True,
     }

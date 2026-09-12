@@ -8,8 +8,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from api_ecommerce.database.base import Base
 
 if TYPE_CHECKING:
-    from api_ecommerce.models.usuario import Usuario
-
+    from api_ecommerce.models.categorias_restaurante import Categorias_restaurante
+    from api_ecommerce.models.responsavel_restaurante import ResponsavelRestaurante
+    from api_ecommerce.models.endereco_restaurante import EnderecoRestaurante
 
 class Restaurante(Base):
     __tablename__ = "restaurante"
@@ -36,10 +37,15 @@ class Restaurante(Base):
         nullable=False,
     )
 
-    categoria: Mapped[str] = mapped_column(
+    categorias: Mapped[list["Categorias_restaurante"]] = relationship(
+    secondary="restaurante_categoria",
+    viewonly=True,
+)
+
+    '''categoria: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
-    )
+    )'''
 
     descricao: Mapped[str | None] = mapped_column(
         String(500),
@@ -52,13 +58,16 @@ class Restaurante(Base):
         default="PENDENTE",
     )
 
-    responsavel_usuario_id: Mapped[int] = mapped_column(
-        ForeignKey("usuario.id_usuario"),
-        nullable=False,
-        index=True,
-    )
+    responsavel_id: Mapped[int] = mapped_column(
+    ForeignKey(
+        "responsavel_restaurante.id_responsavel",
+        ondelete="CASCADE",
+    ),
+    nullable=False,
+    index=True,
+)
 
-    responsavel: Mapped["Usuario"] = relationship(
+    responsavel: Mapped["ResponsavelRestaurante"] = relationship(
         back_populates="restaurantes",
     )
     canais_venda: Mapped[list["CanalVenda"]] = relationship(
@@ -69,6 +78,12 @@ class Restaurante(Base):
         back_populates="restaurante",
         cascade="all, delete-orphan",
     )
+
+    endereco: Mapped["EnderecoRestaurante | None"] = relationship(
+    back_populates="restaurante",
+    uselist=False,
+    cascade="all, delete-orphan",
+)
 
 
 class CanalVenda(Base):
