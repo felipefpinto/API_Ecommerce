@@ -4,8 +4,6 @@ from sqlalchemy import text
 from api_ecommerce.database.connection import engine
 from api_ecommerce.routers import endereco_router, restaurante_router, usuario_router, responsavel_restaurante_router,categoria_router
 from api_ecommerce.routers.endereco_restaurante_router import router as endereco_restaurante_router
-<<<<<<< Updated upstream
-=======
 from api_ecommerce.routers.cardapio_router import router as cardapio_router
 from api_ecommerce.routers.secao_cardapio_router import router as secao_cardapio_router
 from api_ecommerce.routers.produto_router import router as produto_router
@@ -24,7 +22,6 @@ from api_ecommerce.routers.verificacao_router import (
     router as verificacao_router,
 )
 from fastapi.staticfiles import StaticFiles
->>>>>>> Stashed changes
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -74,9 +71,6 @@ app.include_router(endereco_router.router)
 app.include_router(restaurante_router.router)
 app.include_router(responsavel_restaurante_router.router)
 app.include_router(categoria_router.router)
-<<<<<<< Updated upstream
-app.include_router(endereco_restaurante_router)
-=======
 app.include_router(endereco_restaurante_router)
 app.mount("/uploads",StaticFiles(directory="uploads"),name="uploads",)
 app.include_router(cardapio_router)
@@ -94,4 +88,3 @@ app.include_router(
 app.include_router(configuracao_entrega_router)
 app.include_router(carrinho_router)
 app.include_router(verificacao_router)
->>>>>>> Stashed changes
