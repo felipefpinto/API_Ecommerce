@@ -1,30 +1,24 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 
 
-class UsuarioCreate(BaseModel):
+class ResponsavelRestauranteCreate(BaseModel):
     nome: str
     email: EmailStr
     celular: str
-    cpf: Optional[str] = None
 
 
-class UsuarioUpdate(BaseModel):
+class ResponsavelRestauranteUpdate(BaseModel):
     nome: str | None = None
     email: EmailStr | None = None
     celular: str | None = None
-    cpf: str | None = None
-
-class GoogleLoginRequest(BaseModel):
-    credential: str
 
 
-class UsuarioResponse(BaseModel):
-    id_usuario: int
+class ResponsavelRestauranteResponse(BaseModel):
+    id_responsavel: int
     nome: str
     email: EmailStr
     celular: str
-    cpf: Optional[str] = None
+    ativo: bool
 
     model_config = {
         "from_attributes": True

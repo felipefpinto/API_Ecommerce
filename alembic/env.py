@@ -13,6 +13,10 @@ from alembic import context
 from api_ecommerce.core.config import settings
 from api_ecommerce.database.base import Base
 from api_ecommerce.models.usuario import Usuario
+from api_ecommerce.models.endereco import Endereco
+from api_ecommerce.models.categorias_restaurante import Categorias_restaurante
+from api_ecommerce.models.restaurante_categoria import RestauranteCategoria
+from api_ecommerce.models.restaurante import CanalVenda, HorarioFuncionamento, Restaurante
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

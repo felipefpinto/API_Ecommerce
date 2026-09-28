@@ -1,20 +1,20 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String
+from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from api_ecommerce.database.base import Base
 
 if TYPE_CHECKING:
-    from api_ecommerce.models.endereco import Endereco
-    
+    from api_ecommerce.models.restaurante import Restaurante
 
 
-class Usuario(Base):
-    __tablename__ = "usuario"
+class ResponsavelRestaurante(Base):
+    __tablename__ = "responsavel_restaurante"
 
-    id_usuario: Mapped[int] = mapped_column(
+    id_responsavel: Mapped[int] = mapped_column(
         primary_key=True,
         autoincrement=True,
     )
@@ -28,22 +28,23 @@ class Usuario(Base):
         String(150),
         nullable=False,
         unique=True,
+        index=True,
     )
 
     celular: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
         unique=True,
+        index=True,
     )
 
-    cpf: Mapped[str | None] = mapped_column(
-        String(11),
-        nullable=True,
-        unique=True,
+    ativo: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=True,
     )
 
-    enderecos: Mapped[list["Endereco"]] = relationship(
-        back_populates="usuario",
-        cascade="all, delete-orphan",
-    )
-
+    restaurantes: Mapped[list["Restaurante"]] = relationship(
+    back_populates="responsavel",
+    cascade="all, delete-orphan",
+)

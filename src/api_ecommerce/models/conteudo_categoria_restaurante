@@ -1,0 +1,22 @@
+INSERT INTO categoria (nome, descricao, status) VALUES
+    ('Açaí',                    'Restaurantes especializados em açaí e complementos', 'ATIVA'),
+    ('Bebidas',                 'Refrigerantes, sucos, água e outras bebidas', 'ATIVA'),
+    ('Carne/Churrasco',         'Restaurantes especializados em carnes e churrasco', 'ATIVA'),
+    ('Comida Árabe',            'Culinária árabe', 'ATIVA'),
+    ('Comida Italiana',         'Culinária italiana', 'ATIVA'),
+    ('Comida Japonesa',         'Culinária japonesa, incluindo sushi e sashimi', 'ATIVA'),
+    ('Comida Mexicana',         'Culinária mexicana', 'ATIVA'),
+    ('Comida Oriental',         'Culinária oriental (chinesa e correlatas)', 'ATIVA'),
+    ('Comida Portuguesa',       'Culinária portuguesa', 'ATIVA'),
+    ('Comida Saudável',         'Pratos leves, saladas e opções fit', 'ATIVA'),
+    ('Culinária Brasileira',    'Pratos típicos da culinária brasileira', 'ATIVA'),
+    ('Doces e Bolos',           'Sobremesas, doces e bolos', 'ATIVA'),
+    ('Fast-Food',               'Refeições rápidas e práticas', 'ATIVA'),
+    ('Frango',                  'Restaurantes especializados em pratos de frango', 'ATIVA'),
+    ('Lanches',                 'Sanduíches, hambúrgueres e lanches em geral', 'ATIVA'),
+    ('Marmitas',                'Refeições prontas embaladas tipo marmita', 'ATIVA'),
+    ('Padaria',                 'Pães, salgados e itens de padaria', 'ATIVA'),
+    ('Pastelaria',              'Pastéis e frituras em geral', 'ATIVA'),
+    ('Pizza',                   'Restaurantes especializados em pizzas', 'ATIVA'),
+    ('Veganas e Vegetariana',   'Pratos veganos e vegetarianos', 'ATIVA')
+ON CONFLICT ((LOWER(nome))) DO NOTHING;
