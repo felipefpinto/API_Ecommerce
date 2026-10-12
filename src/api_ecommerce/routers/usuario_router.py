@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Depends,Query, HTTPException
 from sqlalchemy.orm import Session
 
+
+from api_ecommerce.core.config import settings
 from api_ecommerce.database import get_db
-from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse, UsuarioUpdate
+from api_ecommerce.schemas import UsuarioCreate, UsuarioResponse, UsuarioUpdate, GoogleLoginRequest
 from api_ecommerce.controllers import usuario_controller
 from api_ecommerce.models.usuario import Usuario
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 router = APIRouter(prefix="/usuario", tags=["Usuários"])
 
@@ -140,3 +145,47 @@ def atualizar_usuario(id_usuario: int,usuario: UsuarioUpdate,db: Session = Depen
 @router.delete("/{id_usuario}")
 def deletar_usuario(id_usuario: int, db: Session = Depends(get_db)):
     return usuario_controller.deletar_usuario(db, id_usuario)
+
+@router.post("/login-google")
+def login_google(
+    dados: GoogleLoginRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        dados_google = id_token.verify_oauth2_token(
+            dados.credential,
+            requests.Request(),
+            settings.google_client_id
+        )
+
+    except ValueError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token do Google inválido"
+        )
+
+    email = dados_google.get("email")
+
+    if not email:
+        raise HTTPException(
+            status_code=400,
+            detail="E-mail não encontrado na conta Google"
+        )
+
+    usuario = (
+        db.query(Usuario)
+        .filter(Usuario.email == email)
+        .first()
+    )
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return {
+        "id_usuario": usuario.id_usuario,
+        "nome": usuario.nome,
+        "email": usuario.email
+    }

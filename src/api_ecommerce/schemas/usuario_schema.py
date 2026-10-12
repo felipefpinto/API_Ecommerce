@@ -15,6 +15,9 @@ class UsuarioUpdate(BaseModel):
     celular: str | None = None
     cpf: str | None = None
 
+class GoogleLoginRequest(BaseModel):
+    credential: str
+
 
 class UsuarioResponse(BaseModel):
     id_usuario: int

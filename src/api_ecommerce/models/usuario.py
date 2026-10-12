@@ -1,7 +1,14 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from api_ecommerce.database.base import Base
+
+if TYPE_CHECKING:
+    from api_ecommerce.models.endereco import Endereco
+    
 
 
 class Usuario(Base):
@@ -26,11 +33,17 @@ class Usuario(Base):
     celular: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
-        unique=True
+        unique=True,
     )
 
     cpf: Mapped[str | None] = mapped_column(
         String(11),
         nullable=True,
         unique=True,
-)
+    )
+
+    enderecos: Mapped[list["Endereco"]] = relationship(
+        back_populates="usuario",
+        cascade="all, delete-orphan",
+    )
+
