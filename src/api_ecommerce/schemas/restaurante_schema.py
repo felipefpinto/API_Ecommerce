@@ -301,6 +301,9 @@ class RestauranteResponse(RestauranteBase):
         default_factory=list,
     )
 
+    logo_url: str | None = None
+    banner_url: str | None = None
+
     model_config = {
         "from_attributes": True,
         "use_enum_values": True,
@@ -327,3 +330,25 @@ class CategoriaRestauranteResponse(BaseModel):
     model_config = {
         "from_attributes": True,
     }
+
+from pydantic import BaseModel
+
+
+class RestauranteDisponivelResponse(BaseModel):
+    id_restaurante: int
+    nome_fantasia: str
+    descricao: str | None = None
+
+    logo_url: str | None = None
+    banner_url: str | None = None
+
+    categorias: list[str] = []
+
+    distancia_km: float | None = None
+    taxa_entrega: float | None = None
+    valor_minimo_pedido: float | None = None
+
+    entrega_disponivel: bool | None = None
+
+    aberto: bool | None = None
+    status_funcionamento: str | None = None

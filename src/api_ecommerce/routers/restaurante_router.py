@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status,File,UploadFile
 from sqlalchemy.orm import Session
 
 from api_ecommerce.controllers import restaurante_controller
@@ -14,6 +14,7 @@ from api_ecommerce.schemas import (
     RestauranteCreate,
     RestauranteResponse,
     RestauranteUpdate,
+    RestauranteDisponivelResponse,
 )
 
 
@@ -35,14 +36,24 @@ def criar_restaurante(
     return restaurante_controller.criar_restaurante(db, restaurante_data)
 
 
+
 @router.get("/", response_model=list[RestauranteResponse])
 def listar_restaurantes(db: Session = Depends(get_db)):
     return restaurante_controller.listar_restaurantes(db)
 
 
-@router.get("/disponiveis", response_model=list[RestauranteResponse])
-def listar_restaurantes_disponiveis(db: Session = Depends(get_db)):
-    return restaurante_controller.listar_restaurantes_disponiveis(db)
+@router.get(
+    "/disponiveis",
+    response_model=list[RestauranteDisponivelResponse],
+)
+def listar_restaurantes_disponiveis(
+    endereco_id: int | None = Query(default=None),
+    db: Session = Depends(get_db),
+):
+    return restaurante_controller.listar_restaurantes_disponiveis(
+        db=db,
+        endereco_id=endereco_id,
+    )
 
 
 @router.get("/buscar-cnpj", response_model=RestauranteCnpjResponse)
@@ -98,6 +109,39 @@ def criar_canal_venda(
         canal_venda_data,
     )
 
+@router.post(
+    "/{id_restaurante}/logo"
+)
+async def upload_logo_restaurante(
+    id_restaurante: int,
+    arquivo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    return await (
+        restaurante_controller
+        .atualizar_logo_restaurante(
+            db,
+            id_restaurante,
+            arquivo,
+        )
+    )
+
+@router.post(
+    "/{id_restaurante}/banner"
+)
+async def upload_banner_restaurante(
+    id_restaurante: int,
+    arquivo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    return await (
+        restaurante_controller
+        .atualizar_banner_restaurante(
+            db,
+            id_restaurante,
+            arquivo,
+        )
+    )
 
 @router.get(
     "/{id_restaurante}/canais-venda",
@@ -227,4 +271,48 @@ def status_funcionamento_restaurante(
             db,
             id_restaurante,
         )
+    )
+
+@router.delete(
+    "/{id_restaurante}/logo"
+)
+def deletar_logo_restaurante(
+    id_restaurante: int,
+    db: Session = Depends(get_db),
+):
+    return (
+        restaurante_controller
+        .remover_logo_restaurante(
+            db,
+            id_restaurante,
+        )
+    )
+
+@router.delete(
+    "/{id_restaurante}/banner"
+)
+def deletar_banner_restaurante(
+    id_restaurante: int,
+    db: Session = Depends(get_db),
+):
+    return (
+        restaurante_controller
+        .remover_banner_restaurante(
+            db,
+            id_restaurante,
+        )
+    )
+
+@router.get(
+    "/{id_restaurante}/calcular-entrega"
+)
+def calcular_entrega_restaurante(
+    id_restaurante: int,
+    endereco_id: int = Query(...),
+    db: Session = Depends(get_db),
+):
+    return restaurante_controller.calcular_entrega_restaurante(
+        db=db,
+        id_restaurante=id_restaurante,
+        id_endereco=endereco_id,
     )
