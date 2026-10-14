@@ -1,16 +1,11 @@
 import re
 
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from pathlib import Path
 
-"""from api_ecommerce.models import (
-    CanalVenda,
-    HorarioFuncionamento,
-    Restaurante,
-    ResponsavelRestaurante,
-)"""
 from api_ecommerce.models import (
     CanalVenda,
     Categorias_restaurante,
@@ -30,7 +25,25 @@ from api_ecommerce.schemas import (
     RestauranteUpdate,
 )
 from api_ecommerce.schemas.restaurante_schema import validar_cnpj_digitos
+from api_ecommerce.services.entrega_service import calcular_entrega
 
+UPLOAD_DIR = Path(
+    "uploads/restaurantes/logos"
+)
+
+UPLOAD_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+BANNER_UPLOAD_DIR = Path(
+    "uploads/restaurantes/banners"
+)
+
+BANNER_UPLOAD_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 CAMPOS_RESTAURANTE_OBRIGATORIOS = {
     "razao_social",
@@ -47,6 +60,275 @@ CAMPOS_HORARIO_FUNCIONAMENTO_OBRIGATORIOS = {
     "hora_fechamento",
 }
 
+async def atualizar_logo_restaurante(
+    db: Session,
+    id_restaurante: int,
+    arquivo: UploadFile,
+):
+    restaurante = buscar_restaurante(
+        db,
+        id_restaurante,
+    )
+
+    tipos_permitidos = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/webp": ".webp",
+    }
+
+    if arquivo.content_type not in tipos_permitidos:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Formato inválido. "
+                "Envie uma imagem JPG, PNG ou WEBP."
+            ),
+        )
+
+    conteudo = await arquivo.read()
+
+    tamanho_maximo = 5 * 1024 * 1024
+
+    if len(conteudo) > tamanho_maximo:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "A imagem deve ter no máximo 5 MB."
+            ),
+        )
+
+    extensao = tipos_permitidos[
+        arquivo.content_type
+    ]
+
+    nome_arquivo = (
+        f"restaurante_{id_restaurante}"
+        f"{extensao}"
+    )
+
+    caminho_arquivo = (
+        UPLOAD_DIR /
+        nome_arquivo
+    )
+
+    # Remove logo anterior se tiver
+    if restaurante.logo_url:
+        caminho_antigo = (
+            restaurante.logo_url
+            .replace(
+                "/uploads/",
+                "uploads/",
+            )
+        )
+
+        arquivo_antigo = Path(
+            caminho_antigo
+        )
+
+        if arquivo_antigo.exists():
+            arquivo_antigo.unlink()
+
+    with open(
+        caminho_arquivo,
+        "wb",
+    ) as arquivo_destino:
+        arquivo_destino.write(
+            conteudo
+        )
+
+    logo_url = (
+        f"/uploads/restaurantes/logos/"
+        f"{nome_arquivo}"
+    )
+
+    restaurante.logo_url = (
+        logo_url
+    )
+
+    db.commit()
+    db.refresh(restaurante)
+
+    return {
+        "logo_url":
+            restaurante.logo_url
+    }
+
+async def atualizar_banner_restaurante(
+    db: Session,
+    id_restaurante: int,
+    arquivo: UploadFile,
+):
+    restaurante = buscar_restaurante(
+        db,
+        id_restaurante,
+    )
+
+    tipos_permitidos = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/webp": ".webp",
+    }
+
+    if arquivo.content_type not in tipos_permitidos:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Formato inválido. "
+                "Envie uma imagem JPG, PNG ou WEBP."
+            ),
+        )
+
+    conteudo = await arquivo.read()
+
+    tamanho_maximo = (
+        8 * 1024 * 1024
+    )
+
+    if len(conteudo) > tamanho_maximo:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "O banner deve ter no máximo 8 MB."
+            ),
+        )
+
+    extensao = tipos_permitidos[
+        arquivo.content_type
+    ]
+
+    nome_arquivo = (
+        f"restaurante_{id_restaurante}"
+        f"{extensao}"
+    )
+
+    caminho_arquivo = (
+        BANNER_UPLOAD_DIR /
+        nome_arquivo
+    )
+
+    # Remove banner anterior
+    if restaurante.banner_url:
+        caminho_antigo = (
+            restaurante.banner_url
+            .replace(
+                "/uploads/",
+                "uploads/",
+            )
+        )
+
+        arquivo_antigo = Path(
+            caminho_antigo
+        )
+
+        if arquivo_antigo.exists():
+            arquivo_antigo.unlink()
+
+    with open(
+        caminho_arquivo,
+        "wb",
+    ) as arquivo_destino:
+        arquivo_destino.write(
+            conteudo
+        )
+
+    banner_url = (
+        f"/uploads/restaurantes/banners/"
+        f"{nome_arquivo}"
+    )
+
+    restaurante.banner_url = (
+        banner_url
+    )
+
+    db.commit()
+    db.refresh(restaurante)
+
+    return {
+        "banner_url":
+            restaurante.banner_url
+    }
+
+
+def remover_logo_restaurante(
+    db: Session,
+    id_restaurante: int,
+):
+    restaurante = buscar_restaurante(
+        db,
+        id_restaurante,
+    )
+
+    if not restaurante.logo_url:
+        raise HTTPException(
+            status_code=400,
+            detail="O restaurante não possui logo cadastrada.",
+        )
+
+    caminho_arquivo = (
+        restaurante.logo_url
+        .replace(
+            "/uploads/",
+            "uploads/",
+        )
+    )
+
+    arquivo = Path(
+        caminho_arquivo
+    )
+
+    if arquivo.exists():
+        arquivo.unlink()
+
+    restaurante.logo_url = None
+
+    db.commit()
+    db.refresh(restaurante)
+
+    return {
+        "message":
+            "Logo removida com sucesso."
+    }
+
+
+def remover_banner_restaurante(
+    db: Session,
+    id_restaurante: int,
+):
+    restaurante = buscar_restaurante(
+        db,
+        id_restaurante,
+    )
+
+    if not restaurante.banner_url:
+        raise HTTPException(
+            status_code=400,
+            detail="O restaurante não possui banner cadastrado.",
+        )
+
+    caminho_arquivo = (
+        restaurante.banner_url
+        .replace(
+            "/uploads/",
+            "uploads/",
+        )
+    )
+
+    arquivo = Path(
+        caminho_arquivo
+    )
+
+    if arquivo.exists():
+        arquivo.unlink()
+
+    restaurante.banner_url = None
+
+    db.commit()
+    db.refresh(restaurante)
+
+    return {
+        "message":
+            "Banner removido com sucesso."
+    }
 
 def buscar_responsavel(
     db: Session,
@@ -287,13 +569,114 @@ def listar_restaurantes(db: Session) -> list[Restaurante]:
     return db.query(Restaurante).all()
 
 
-def listar_restaurantes_disponiveis(db: Session) -> list[Restaurante]:
-    return (
+def listar_restaurantes_disponiveis(
+    db: Session,
+    endereco_id: int | None = None,
+) -> list[dict]:
+
+    restaurantes = (
         db.query(Restaurante)
-        .filter(Restaurante.status == RestauranteStatus.DISPONIVEL.value)
+        .filter(
+            Restaurante.status
+            == RestauranteStatus.DISPONIVEL.value
+        )
         .all()
     )
 
+    resultado = []
+
+    for restaurante in restaurantes:
+
+        dados = {
+            "id_restaurante":
+                restaurante.id_restaurante,
+
+            "nome_fantasia":
+                restaurante.nome_fantasia,
+
+            "descricao":
+                restaurante.descricao,
+
+            "logo_url":
+                restaurante.logo_url,
+
+            "banner_url":
+                restaurante.banner_url,
+
+            "categorias": [
+                categoria.nome
+                for categoria
+                in restaurante.categorias
+            ],
+
+            "distancia_km": None,
+            "taxa_entrega": None,
+            "valor_minimo_pedido": None,
+
+            "entrega_disponivel": None,
+
+            "aberto": None,
+            "status_funcionamento": None,
+        }
+
+        # ==================================
+        # STATUS DE FUNCIONAMENTO
+        # ==================================
+
+        funcionamento = (
+            verificar_funcionamento_restaurante(
+                db,
+                restaurante.id_restaurante,
+            )
+        )
+
+        dados["aberto"] = funcionamento["aberto"]
+
+        dados["status_funcionamento"] = (
+            funcionamento["proximo_evento"]
+            or funcionamento["mensagem"]
+        )
+
+        # ==================================
+        # ENTREGA POR ENDEREÇO
+        # ==================================
+
+        if endereco_id is not None:
+
+            try:
+                entrega = calcular_entrega(
+                    db=db,
+                    id_restaurante=(
+                        restaurante.id_restaurante
+                    ),
+                    id_endereco=endereco_id,
+                )
+
+                dados["distancia_km"] = (
+                    entrega["distancia_km"]
+                )
+
+                dados["taxa_entrega"] = (
+                    entrega["taxa_entrega"]
+                )
+
+                dados["valor_minimo_pedido"] = (
+                    entrega["valor_minimo_pedido"]
+                )
+
+                dados["entrega_disponivel"] = (
+                    entrega["dentro_area_entrega"]
+                    and entrega["taxa_entrega"]
+                    is not None
+                )
+
+            except HTTPException:
+                dados["entrega_disponivel"] = False
+
+        resultado.append(dados)
+
+    return resultado
+    
 def listar_horarios_funcionamento(
     db: Session,
     id_restaurante: int,
@@ -1130,3 +1513,16 @@ def verificar_funcionamento_restaurante(
         "proximo_evento":
             "Nenhum horário de funcionamento cadastrado",
     }
+
+    
+
+def calcular_entrega_restaurante(
+    db: Session,
+    id_restaurante: int,
+    id_endereco: int,
+):
+    return calcular_entrega(
+        db=db,
+        id_restaurante=id_restaurante,
+        id_endereco=id_endereco,
+    )
