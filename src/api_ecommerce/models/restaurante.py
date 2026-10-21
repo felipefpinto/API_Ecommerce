@@ -11,6 +11,9 @@ if TYPE_CHECKING:
     from api_ecommerce.models.categorias_restaurante import Categorias_restaurante
     from api_ecommerce.models.responsavel_restaurante import ResponsavelRestaurante
     from api_ecommerce.models.endereco_restaurante import EnderecoRestaurante
+    from api_ecommerce.models.cardapio import Cardapio
+    from api_ecommerce.models.produto import Produto
+    from api_ecommerce.models.configuracao_entrega import ConfiguracaoEntrega
 
 class Restaurante(Base):
     __tablename__ = "restaurante"
@@ -41,12 +44,6 @@ class Restaurante(Base):
     secondary="restaurante_categoria",
     viewonly=True,
 )
-
-    '''categoria: Mapped[str] = mapped_column(
-        String(50),
-        nullable=False,
-    )'''
-
     descricao: Mapped[str | None] = mapped_column(
         String(500),
         nullable=True,
@@ -84,7 +81,32 @@ class Restaurante(Base):
     uselist=False,
     cascade="all, delete-orphan",
 )
+    configuracao_entrega: Mapped[
+        "ConfiguracaoEntrega | None"
+    ] = relationship(
+        back_populates="restaurante",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
 
+    logo_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    banner_url: Mapped[str | None] = mapped_column(
+    String(500),
+    nullable=True,
+)
+    cardapios: Mapped[list["Cardapio"]] = relationship(
+        back_populates="restaurante",
+        cascade="all, delete-orphan",
+    )
+
+    produtos: Mapped[list["Produto"]] = relationship(
+    back_populates="restaurante",
+    cascade="all, delete-orphan",
+)
 
 class CanalVenda(Base):
     __tablename__ = "canal_venda"
