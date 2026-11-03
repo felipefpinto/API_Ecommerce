@@ -5,3 +5,17 @@ from .restaurante import CanalVenda, HorarioFuncionamento, Restaurante
 from .categorias_restaurante import Categorias_restaurante
 from .restaurante_categoria import RestauranteCategoria
 from .endereco_restaurante import EnderecoRestaurante
+from.grupo_complemento import GrupoComplemento
+from.complemento import Complemento
+from .carrinho import (
+    Carrinho,
+    CarrinhoItem,
+    CarrinhoItemComplemento,
+)
+
+from .pedido import (
+    Pedido,
+    ItemPedido,
+    ItemPedidoComplemento,
+    Pagamento,
+)

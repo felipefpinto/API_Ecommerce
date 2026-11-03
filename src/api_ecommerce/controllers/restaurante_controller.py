@@ -6,6 +6,12 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
 
+"""from api_ecommerce.models import (
+    CanalVenda,
+    HorarioFuncionamento,
+    Restaurante,
+    ResponsavelRestaurante,
+)"""
 from api_ecommerce.models import (
     CanalVenda,
     Categorias_restaurante,

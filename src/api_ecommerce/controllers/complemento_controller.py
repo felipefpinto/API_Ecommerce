@@ -12,13 +12,6 @@ from api_ecommerce.schemas.complemento_schema import (
     ComplementoUpdate,
 )
 
-
-
-
-
-
-
-
 def buscar_grupo(
     db: Session,
     id_restaurante: int,

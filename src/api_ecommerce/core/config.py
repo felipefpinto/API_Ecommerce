@@ -6,8 +6,6 @@ class Settings(BaseSettings):
 
     google_client_id: str
     google_client_secret: str
-<<<<<<< Updated upstream
-=======
     otp_modo: str = "dev"
 
     twilio_account_sid: str | None = None
@@ -17,7 +15,10 @@ class Settings(BaseSettings):
     sendgrid_api_key: str | None = None
     sendgrid_from_email: str | None = None
     sendgrid_template_id: str | None = None
->>>>>>> Stashed changes
+
+    mercado_pago_access_token: str | None = None
+    mercado_pago_public_key: str | None = None
+    mercado_pago_webhook_secret: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

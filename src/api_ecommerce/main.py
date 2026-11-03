@@ -21,6 +21,9 @@ from api_ecommerce.routers.carrinho_router import router as carrinho_router
 from api_ecommerce.routers.verificacao_router import (
     router as verificacao_router,
 )
+from api_ecommerce.routers import pedido_router
+from api_ecommerce.routers import pagamento_router
+from api_ecommerce.routers import webhook_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -88,3 +91,7 @@ app.include_router(
 app.include_router(configuracao_entrega_router)
 app.include_router(carrinho_router)
 app.include_router(verificacao_router)
+app.include_router(pedido_router.router)
+app.include_router(pedido_router.router_restaurante)
+app.include_router(pagamento_router.router)
+app.include_router(webhook_router.router)
