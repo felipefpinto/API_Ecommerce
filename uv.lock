@@ -146,14 +146,12 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "google-auth" },
     { name = "httpx" },
+    { name = "mercadopago" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "requests" },
-<<<<<<< Updated upstream
-=======
     { name = "sendgrid" },
->>>>>>> Stashed changes
     { name = "sqlalchemy" },
     { name = "twilio" },
 ]
@@ -164,14 +162,12 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
     { name = "google-auth", specifier = ">=2.57.0" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "mercadopago", specifier = ">=3.6.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.4,<4.0.0" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
     { name = "python-dotenv", specifier = ">=1.2.2,<2.0.0" },
     { name = "requests", specifier = ">=2.34.2" },
-<<<<<<< Updated upstream
-=======
     { name = "sendgrid", specifier = ">=6.12.5" },
->>>>>>> Stashed changes
     { name = "sqlalchemy", specifier = ">=2.0.52" },
     { name = "twilio", specifier = ">=9.11.1" },
 ]
@@ -559,8 +555,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< Updated upstream
-=======
 name = "frozenlist"
 version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -602,7 +596,6 @@ wheels = [
 ]
 
 [[package]]
->>>>>>> Stashed changes
 name = "google-auth"
 version = "2.57.0"
 source = { registry = "https://pypi.org/simple" }
@@ -795,6 +788,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "mercadopago"
+version = "3.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/76/1f/49c0d2439203ccdb032ad558f2ce98111cb550266e9e106ea74136b3ad4b/mercadopago-3.6.0.tar.gz", hash = "sha256:fcf6cb11f1d5505b9b237682b97e482a13cda0cbb4829de28a07028775f58632", size = 67484, upload-time = "2026-09-10T00:05:40.718Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/e6/ed2c481aa6cdf366d090976a95f753bfdac6ee0a5ff4622f1f8ee533d7a7/mercadopago-3.6.0-py3-none-any.whl", hash = "sha256:9a405991f8520ee36b2857bf7b2c8fbd701a5f429fc8f60fcf9fd2a9e664bb0f", size = 81318, upload-time = "2026-09-10T00:05:39.436Z" },
 ]
 
 [[package]]

@@ -211,3 +211,14 @@ def deletar_responsavel(
         db.rollback()
 
         raise
+
+def listar_restaurantes_do_responsavel(
+    db: Session,
+    id_responsavel: int
+):
+    responsavel = buscar_responsavel(
+        db,
+        id_responsavel
+    )
+
+    return responsavel.restaurantes

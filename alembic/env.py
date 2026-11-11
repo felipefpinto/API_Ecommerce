@@ -12,11 +12,34 @@ from alembic import context
 
 from api_ecommerce.core.config import settings
 from api_ecommerce.database.base import Base
+
 from api_ecommerce.models.usuario import Usuario
 from api_ecommerce.models.endereco import Endereco
+
 from api_ecommerce.models.categorias_restaurante import Categorias_restaurante
 from api_ecommerce.models.restaurante_categoria import RestauranteCategoria
-from api_ecommerce.models.restaurante import CanalVenda, HorarioFuncionamento, Restaurante
+from api_ecommerce.models.restaurante import (CanalVenda,HorarioFuncionamento,Restaurante)
+from api_ecommerce.models.responsavel_restaurante import ResponsavelRestaurante
+from api_ecommerce.models.cardapio import Cardapio
+from api_ecommerce.models.secao_cardapio import (SecaoCardapio,)
+from api_ecommerce.models.produto import Produto
+from api_ecommerce.models.secao_produto import SecaoProduto
+from api_ecommerce.models.grupo_complemento import GrupoComplemento
+from api_ecommerce.models.complemento import Complemento
+from api_ecommerce.models.produto_grupo_complemento import ProdutoGrupoComplemento
+from api_ecommerce.models.produto_sugestao import ProdutoSugestao
+from api_ecommerce.models.configuracao_entrega import (ConfiguracaoEntrega,FaixaEntrega)
+from api_ecommerce.models.carrinho import (
+    Carrinho,
+    CarrinhoItem,
+    CarrinhoItemComplemento,
+)
+from api_ecommerce.models.pedido import (
+    Pedido,
+    ItemPedido,
+    ItemPedidoComplemento,
+    Pagamento,
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

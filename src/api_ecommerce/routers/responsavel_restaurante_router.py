@@ -14,6 +14,7 @@ from api_ecommerce.controllers import responsavel_restaurante_controller
 from api_ecommerce.models.responsavel_restaurante import (
     ResponsavelRestaurante,
 )
+from api_ecommerce.schemas import RestauranteResponse
 
 router = APIRouter(
     prefix="/responsavel-restaurante",
@@ -227,3 +228,18 @@ def deletar_responsavel(
         id_responsavel
     )
 
+@router.get(
+    "/{id_responsavel}/restaurantes",
+    response_model=list[RestauranteResponse]
+)
+def listar_restaurantes_do_responsavel(
+    id_responsavel: int,
+    db: Session = Depends(get_db)
+):
+    return (
+        responsavel_restaurante_controller
+        .listar_restaurantes_do_responsavel(
+            db,
+            id_responsavel
+        )
+    )
